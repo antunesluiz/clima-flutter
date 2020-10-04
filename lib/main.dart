@@ -54,14 +54,18 @@ class _MyHomePageState extends State<MyHomePage> {
     Map clima = json.decode(response.body);
 
     setState(() {
-      this._clima.temperatura = clima["results"]["temp"];
-      this._clima.cidade = clima["results"]["city"];
-      this._clima.descricao = clima["results"]["description"];
-      this._clima.umidade = clima["results"]["humidity"];
-      this._clima.nascerSol = clima["results"]["sunrise"];
-      this._clima.porSol = clima["results"]["sunset"];
+      if (!clima["error"]) {
+        this._clima.temperatura = clima["results"]["temp"];
+        this._clima.cidade = clima["results"]["city"];
+        this._clima.descricao = clima["results"]["description"];
+        this._clima.umidade = clima["results"]["humidity"];
+        this._clima.nascerSol = clima["results"]["sunrise"];
+        this._clima.porSol = clima["results"]["sunset"];
 
-      _isNotNull = true;
+        _isNotNull = true;
+      } else {
+        _isNotNull = false;
+      }
     });
   }
 
@@ -90,7 +94,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           Expanded(
-            flex: 2,
+            flex: _isNotNull ? 2 : 3,
             child: _isNotNull ? 
               Container(
                 padding: EdgeInsets.all(8),
