@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class Label {
-  static small(String rotulo){
+  static smallTextSpan(String rotulo){
     return TextSpan(
-      text: rotulo,
+      text: rotulo + "\n",
       style: TextStyle(
         color: Colors.white,
         fontSize: 18,
@@ -13,7 +13,7 @@ class Label {
 
   static medium(String rotulo){
     return Text(
-      rotulo,
+      rotulo + "\n",
       style: TextStyle(
         color: Colors.white,
         fontWeight: FontWeight.bold,
@@ -25,7 +25,7 @@ class Label {
 
   static large(String rotulo){
     return Text(
-      rotulo,
+      rotulo + "\n",
       style: TextStyle(
         color: Colors.white,
         fontWeight: FontWeight.bold,

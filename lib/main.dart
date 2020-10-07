@@ -4,6 +4,7 @@ import 'package:clima/components/Label.dart';
 import 'package:clima/models/Clima.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:toast/toast.dart';
 
 void main() {
   runApp(MyApp());
@@ -47,26 +48,45 @@ class _MyHomePageState extends State<MyHomePage> {
     getClima();
   }
 
-  getClima() async{
+  getClima() async {
     String url = "https://api.hgbrasil.com/weather?key=465739c4&city_name=Contagem,MG";
 
     Response response = await get(url);
     Map clima = json.decode(response.body);
 
-    setState(() {
-      if (!clima["error"]) {
-        this._clima.temperatura = clima["results"]["temp"];
-        this._clima.cidade = clima["results"]["city"];
-        this._clima.descricao = clima["results"]["description"];
-        this._clima.umidade = clima["results"]["humidity"];
-        this._clima.nascerSol = clima["results"]["sunrise"];
-        this._clima.porSol = clima["results"]["sunset"];
+    if (!clima["error"]) {
+      this._clima.temperatura = clima["results"]["temp"];
+      this._clima.cidade = clima["results"]["city"];
+      this._clima.descricao = clima["results"]["description"];
+      this._clima.umidade = clima["results"]["humidity"];
+      this._clima.nascerSol = clima["results"]["sunrise"];
+      this._clima.porSol = clima["results"]["sunset"];
 
-        _isNotNull = true;
-      } else {
-        _isNotNull = false;
-      }
+      _isNotNull = true;
+    } else {
+      String url = "https://api.hgbrasil.com/weather?woeid=455821";
+
+      Response response = await get(url);
+      clima = json.decode(response.body);
+
+      this._clima.temperatura = clima["results"]["temp"];
+      this._clima.cidade = clima["results"]["city"];
+      this._clima.descricao = clima["results"]["description"];
+      this._clima.umidade = clima["results"]["humidity"];
+      this._clima.nascerSol = clima["results"]["sunrise"];
+      this._clima.porSol = clima["results"]["sunset"];
+
+      _isNotNull = true;
+    }
+
+    setState(() {
+      _clima;
+      _isNotNull;
     });
+  }
+
+  void showToast(String msg, {int duration, int gravity}) {
+    Toast.show(msg, context, duration: duration, gravity: gravity);
   }
 
   @override
@@ -106,7 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Container (
                 padding: EdgeInsets.all(8),
                 alignment: Alignment.center,
-                child: Label.medium("Estamos buscando os dados."),
+                child: Label.medium("Buscando por dados..."),
                 color: Colors.blue,
               )
           ),
@@ -119,11 +139,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 text: TextSpan(
                   children: _isNotNull ? 
                     <TextSpan> [
-                      Label.small(_clima.cidade + ". "),
-                      Label.small(_clima.descricao + ".\n\n"),
-                      Label.small("Umidade: " + _clima.umidade.toString() + " kg/m³\n"),
-                      Label.small( "Nascer do sol: " + _clima.nascerSol + "\n"),
-                      Label.small("Por do sol: " + _clima.porSol + "\n"),                                   
+                      Label.smallTextSpan(_clima.cidade + ". "),
+                      Label.smallTextSpan(_clima.descricao + "\n"),
+                      Label.smallTextSpan("Umidade: " + _clima.umidade.toString() + " kg/m³"),
+                      Label.smallTextSpan("Nascer do sol: " + _clima.nascerSol),
+                      Label.smallTextSpan("Por do sol: " + _clima.porSol),                                   
                     ]
                   :
                     null
